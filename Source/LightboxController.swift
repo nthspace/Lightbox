@@ -168,7 +168,7 @@ open class LightboxController: UIViewController {
 
     statusBarHidden = UIApplication.shared.isStatusBarHidden
 
-    view.backgroundColor = UIColor.black
+    view.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.9)
     transitionManager.lightboxController = self
     transitionManager.scrollView = scrollView
     transitioningDelegate = transitionManager
