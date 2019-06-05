@@ -43,16 +43,16 @@ public class LightboxConfig {
 
   public struct PageIndicator {
     public static var enabled = true
-    public static var separatorColor = UIColor(hex: "3D4757")
 
     public static var textAttributes: [NSAttributedString.Key: Any] = [
-      .font: UIFont.systemFont(ofSize: 12),
-      .foregroundColor: UIColor(hex: "899AB8"),
+        .font: UIFont(name: "PingFangTC-Regular", size: 14) as Any,
+      .foregroundColor: UIColor.white,
       .paragraphStyle: {
         var style = NSMutableParagraphStyle()
         style.alignment = .center
         return style
-      }()
+      }(),
+      .kern: 1
     ]
   }
 

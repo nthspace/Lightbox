@@ -22,16 +22,17 @@ open class FooterView: UIView {
     let label = UILabel(frame: CGRect.zero)
     label.isHidden = !LightboxConfig.PageIndicator.enabled
     label.numberOfLines = 1
+    label.contentMode = .center
 
     return label
   }()
-
-  open fileprivate(set) lazy var separatorView: UIView = { [unowned self] in
-    let view = UILabel(frame: CGRect.zero)
-    view.isHidden = !LightboxConfig.PageIndicator.enabled
-    view.backgroundColor = LightboxConfig.PageIndicator.separatorColor
-
-    return view
+    
+  fileprivate lazy var pageIndicators: PageIndicators = { [unowned self] in
+    let stackView = PageIndicators(frame: .zero)
+    stackView.setup()
+    stackView.sizeToFit()
+    
+    return stackView
   }()
 
   let gradientColors = [UIColor(hex: "040404").withAlphaComponent(0.1), UIColor(hex: "040404")]
@@ -45,7 +46,7 @@ open class FooterView: UIView {
     backgroundColor = UIColor.clear
     _ = addGradientLayer(gradientColors)
 
-    [pageLabel, infoLabel, separatorView].forEach { addSubview($0) }
+    [pageLabel, infoLabel, pageIndicators].forEach { addSubview($0) }
   }
 
   public required init?(coder aDecoder: NSCoder) {
@@ -64,6 +65,8 @@ open class FooterView: UIView {
     pageLabel.attributedText = NSAttributedString(string: text,
       attributes: LightboxConfig.PageIndicator.textAttributes)
     pageLabel.sizeToFit()
+    pageIndicators.totalPages = numberOfPages
+    pageIndicators.currentPage = page
   }
 
   func updateText(_ text: String) {
@@ -82,9 +85,9 @@ open class FooterView: UIView {
     do {
       let bottomPadding: CGFloat
       if #available(iOS 11, *) {
-        bottomPadding = safeAreaInsets.bottom
+        bottomPadding = 43 + safeAreaInsets.bottom
       } else {
-        bottomPadding = 0
+        bottomPadding = 43
       }
 
       pageLabel.frame.origin = CGPoint(
@@ -93,14 +96,12 @@ open class FooterView: UIView {
       )
     }
 
-    separatorView.frame = CGRect(
-      x: 0,
-      y: pageLabel.frame.minY - 2.5,
-      width: frame.width,
-      height: 0.5
+    pageIndicators.frame.origin = CGPoint(
+      x: (frame.width - pageIndicators.frame.width) / 2,
+      y: pageLabel.frame.minY - 6
     )
-
-    infoLabel.frame.origin.y = separatorView.frame.minY - infoLabel.frame.height - 15
+    
+    infoLabel.frame.origin.y = infoLabel.frame.height - 15    
 
     resizeGradientLayer()
   }
