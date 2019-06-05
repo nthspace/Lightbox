@@ -22,15 +22,11 @@ public class PageIndicators: UIStackView {
   
    func setup() {
     self.axis = .horizontal
-    self.spacing = 5
     self.alignment = .center
-    self.distribution = .equalSpacing
+    self.contentMode = .center
+    self.spacing = 5
+    self.translatesAutoresizingMaskIntoConstraints = false
     
-    for index in 1..<(totalPages+1) {
-      let view = Indicator(index)
-      view.highlighted = view.tag == self.currentPage
-      self.addSubview(view)
-    }
   }
   
   override init(frame: CGRect) {
@@ -41,37 +37,38 @@ public class PageIndicators: UIStackView {
     fatalError("init(coder:) has not been implemented")
   }
   
+  private func addIndicators() {
+    for index in 1..<(self.totalPages + 1) {
+      
+      let view = Indicator(index)
+      view.selected = view.tag == self.currentPage
+      view.heightAnchor.constraint(equalToConstant: 5).isActive = true
+      view.widthAnchor.constraint(equalToConstant: 5).isActive = true
+      
+      self.addArrangedSubview(view)
+    }
+  }
+  
   func updateHighlightIndicator() {
     for view in self.subviews {
       let v = view as! Indicator
-      v.highlighted = v.tag == self.currentPage
+      v.selected = v.tag == self.currentPage
     }
   }
   
   func adjustIndicators() {
-    if self.subviews.count < self.totalPages { // add more indicators
-      let start = self.subviews.count + 1
-      let end = self.totalPages + 1
-      
-      for index in start..<end {
-        self.addSubview(Indicator(index))
-      }
-    } else { // remove redundant indicators
-      for view in self.subviews {
-        if view.tag > self.totalPages {
-          view.removeFromSuperview()
-        }
-      }
+    for view in self.subviews {
+      view.removeFromSuperview()
     }
     
-    updateHighlightIndicator()
+    addIndicators()
   }
   
   fileprivate class Indicator: UIView {
     var pageNum: Int?
-    var highlighted: Bool? {
+    var selected: Bool? {
       didSet {
-        if self.highlighted == true {
+        if self.selected == true {
           self.backgroundColor = UIColor.init(white: 1, alpha: 1)
         } else {
           self.backgroundColor = UIColor.init(white: 1, alpha: 0.5)
@@ -83,17 +80,15 @@ public class PageIndicators: UIStackView {
     
     public init(_ page: Int) {
       super.init(frame: CGRect(x: 0, y: 0, width: circleWidth, height: circleWidth))
+      
       self.tag = page
-      self.highlighted = false
+      self.selected = false
+      self.layer.cornerRadius = CGFloat(self.circleWidth) / 2
+      self.layer.masksToBounds = true
     }
     
     required init?(coder aDecoder: NSCoder) {
       fatalError("init(coder:) has not been implemented")
-    }
-    override func layoutSubviews() {
-      super.layoutSubviews()
-      self.layer.cornerRadius = CGFloat(self.circleWidth)
-      self.layer.masksToBounds = true
     }
   }
 }

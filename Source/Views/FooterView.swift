@@ -65,6 +65,7 @@ open class FooterView: UIView {
     pageLabel.attributedText = NSAttributedString(string: text,
       attributes: LightboxConfig.PageIndicator.textAttributes)
     pageLabel.sizeToFit()
+    
     pageIndicators.totalPages = numberOfPages
     pageIndicators.currentPage = page
   }
@@ -98,10 +99,10 @@ open class FooterView: UIView {
 
     pageIndicators.frame.origin = CGPoint(
       x: (frame.width - pageIndicators.frame.width) / 2,
-      y: pageLabel.frame.minY - 6
-    )
+      y: pageLabel.frame.minY - 9
+    )        
     
-    infoLabel.frame.origin.y = infoLabel.frame.height - 15    
+    infoLabel.frame.origin.y = infoLabel.frame.height - 15
 
     resizeGradientLayer()
   }
