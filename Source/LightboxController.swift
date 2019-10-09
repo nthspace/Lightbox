@@ -203,9 +203,15 @@ open class LightboxController: UIViewController {
       y: view.bounds.height - footerView.frame.height
     )
 
+    let topPadding: CGFloat
+    if #available(iOS 11, *) {
+        topPadding = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0
+    } else {
+        topPadding = 0
+    }
     headerView.frame = CGRect(
       x: 0,
-      y: 16,
+      y: topPadding,
       width: view.bounds.width,
       height: 100
     )

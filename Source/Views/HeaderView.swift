@@ -60,6 +60,7 @@ open class HeaderView: UIView {
     return button
   }()
 
+  var testButton: UIButton?
   weak var delegate: HeaderViewDelegate?
 
   // MARK: - Initializers
@@ -69,7 +70,13 @@ open class HeaderView: UIView {
 
     backgroundColor = UIColor.clear
 
-    [closeButton, deleteButton].forEach { addSubview($0) }
+    testButton = UIButton(type: .system)
+    testButton?.setBackgroundImage(AssetManager.image("lightbox_close"), for: UIControl.State())
+    testButton?.sizeToFit()
+    testButton?.addTarget(self, action: #selector(closeButtonDidPress(_:)),
+                     for: .touchUpInside)
+    testButton?.frame.origin = CGPoint(x: 17, y: 0)
+    addSubview(testButton!)
   }
 
   public required init?(coder aDecoder: NSCoder) {
@@ -92,22 +99,5 @@ open class HeaderView: UIView {
 extension HeaderView: LayoutConfigurable {
 
   @objc public func configureLayout() {
-    let topPadding: CGFloat
-
-    if #available(iOS 11, *) {
-      topPadding = safeAreaInsets.top
-    } else {
-      topPadding = 0
-    }
-
-    closeButton.frame.origin = CGPoint(
-      x: 17,
-      y: topPadding
-    )
-
-    deleteButton.frame.origin = CGPoint(
-      x: bounds.width - deleteButton.frame.width - 17,
-      y: topPadding
-    )
   }
 }
